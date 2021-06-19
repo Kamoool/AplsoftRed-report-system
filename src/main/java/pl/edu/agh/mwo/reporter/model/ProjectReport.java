@@ -22,7 +22,7 @@ public class ProjectReport implements IReport{
     private String reportBody;
 
     public ProjectReport(List<Project> projects) {
-        this.head = "Report #" + this.hashCode();
+        this.head = "Report #" + this.hashCode() + "\n";
         this.legend = String.format(LINE_FORMAT, "Projekt", "Godziny");
         this.projects = projects;
         updateReport();
@@ -54,7 +54,7 @@ public class ProjectReport implements IReport{
     @Override
     public void saveReportToFile(){
         //TODO ustalic gdzie przechowujemy reporty, czy w jednym miejscu czy np. podajemy path na wejscie
-        String reportFilePath = new File(FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
+        String reportFilePath = new File("ProjRep_" + FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
         try {
             Files.write(Paths.get(reportFilePath), Arrays.asList(reportBody.split("\n")));
         } catch (IOException e) {
