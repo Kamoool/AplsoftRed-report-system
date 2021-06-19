@@ -23,7 +23,7 @@ public class EmployeeReport implements IReport{
 
     public EmployeeReport(List<Employee> employees) {
         this.head = "Report #" + this.hashCode() + "\n";
-        this.legend = String.format("Pracownik | Projekty... | Suma");
+        this.legend = String.format("Pracownik | Projekty... | Suma\n");
         this.employees = employees;
         updateReport();
     }
@@ -31,8 +31,7 @@ public class EmployeeReport implements IReport{
     @Override
     public void updateReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append(head);
-        sb.append(legend);
+        sb.append(head).append("\n").append(legend);
 
         for (Employee employee : employees) {
             double employeeHoursSum = 0.0;
@@ -47,9 +46,10 @@ public class EmployeeReport implements IReport{
                 sb.append(project.getName() + " -> " + projectHoursSum + "hrs | ");
                 employeeHoursSum = employeeHoursSum + projectHoursSum;
             }
-            sb.append("Total -> " + employeeHoursSum + "hrs");
+            sb.append("Total -> " + employeeHoursSum + "hrs\n");
         }
 
+        sb.append("\n");
         sb.append("Employee report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }

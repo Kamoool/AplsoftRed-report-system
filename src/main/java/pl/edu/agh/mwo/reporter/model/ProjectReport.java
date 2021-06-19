@@ -13,7 +13,7 @@ public class ProjectReport implements IReport{
 
     private final SimpleDateFormat REPORT_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy 'at' HH:mm:ss");
     private final SimpleDateFormat FILE_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
-    private final String LINE_FORMAT = "%-10s | %10s\n";
+    private final String LINE_FORMAT = "%-30s | %s\n";
     
 
     private String head;
@@ -31,8 +31,7 @@ public class ProjectReport implements IReport{
     @Override
     public void updateReport() {
         StringBuilder sb = new StringBuilder();
-        sb.append(head);
-        sb.append(legend);
+        sb.append(head).append("\n").append(legend);
 
         for (Project project : projects) {
             double projectHoursSum = project.getTasks().stream()
@@ -42,6 +41,7 @@ public class ProjectReport implements IReport{
             sb.append(String.format(LINE_FORMAT, project.getName(), projectHoursSum));
         }
 
+        sb.append("\n");
         sb.append("Project report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }

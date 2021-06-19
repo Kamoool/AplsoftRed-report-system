@@ -5,20 +5,21 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
-public class TaskTest {
+public class CompanyTest {
 
     private Company company;
 
     @Before
     public void setUp() {
         company = new Company();
-
         fillData();
     }
 
     private void fillData() {
         Task task1 = new Task("name1", LocalDate.of(2020, 10, 10), 5);
+        Task task10 = new Task("name1", LocalDate.of(2020, 10, 10), 5);
         Task task2 = new Task("name1", LocalDate.of(2021, 11, 11), 6);
         Task task3 = new Task("name2", LocalDate.of(2020, 10, 10), 7);
         Task task4 = new Task("name3", LocalDate.of(2019, 9, 9), 5);
@@ -38,6 +39,7 @@ public class TaskTest {
         Employee employee2 = new Employee("Marek", "Nowak");
 
         project1.addTask(task1);
+        project1.addTask(task10);
         project1.addTask(task2);
         project2.addTask(task3);
         project2.addTask(task4);
@@ -72,18 +74,18 @@ public class TaskTest {
     }
 
     @Test
-    public void findingTasksByName() {
-        Task taskByName = company.getEmployeeByName("Jan", "Kowalski").findProjectByName("Project1").findTaskByName("name1");
-        Task testTask = new Task("name1", LocalDate.of(2020, 10, 10), 5);
-        assertEquals(taskByName, testTask);
+    public void findingTasksByNameWithMergedHours() {
+        List<Task> taskByName = company.getEmployeeByName("Jan", "Kowalski").findProjectByName("Project1").findTaskByName("name1");
+        Task testTask = new Task("name1", LocalDate.of(2020, 10, 10), 10);
+        assertTrue(taskByName.contains(testTask));
+
     }
 
     @Test
     public void findingTaskByNameClonnedProject() {
-        Task testTask = new Task("name8", LocalDate.of(2013, 2, 12), 3);
+        Task testTask = new Task("name8", LocalDate.of(2013, 2, 12), 3.0);
         boolean checkedCondition = company.getEmployeeByName("Jan", "Kowalski").findProjectByName("Project1").getTasks().contains(testTask);
         assertTrue(checkedCondition);
     }
-
 
 }
