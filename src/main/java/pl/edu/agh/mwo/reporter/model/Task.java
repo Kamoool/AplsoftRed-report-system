@@ -27,16 +27,20 @@ public class Task {
         return hours;
     }
 
+    public void setHours(double hours) {
+        this.hours = hours;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(name, task.name);
+        return Objects.equals(name, task.name) && Objects.equals(date, task.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, date);
     }
 }
