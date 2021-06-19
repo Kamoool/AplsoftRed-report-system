@@ -114,6 +114,7 @@ GitHub.sublime-settings
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/
 
 # Gradle
 .idea/**/gradle.xml
@@ -129,7 +130,7 @@ GitHub.sublime-settings
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
-# *.iml
+*.iml
 # *.ipr
 
 # CMake
@@ -143,6 +144,7 @@ cmake-build-*/
 
 # IntelliJ
 out/
+.idea/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -914,4 +916,5 @@ hs_err_pid*
 
 # Local History for Visual Studio Code
 .history/
+
 
