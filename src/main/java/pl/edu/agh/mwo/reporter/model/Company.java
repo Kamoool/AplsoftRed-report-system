@@ -48,8 +48,7 @@ public class Company {
     }
 
     public void removeEmployee(Employee employee) {
-        if (this.employees.contains(employee))
-            this.employees.remove(employee);
+        this.employees.remove(employee);
     }
 
     public Employee getEmployeeByName(String firstName, String lastName) {
