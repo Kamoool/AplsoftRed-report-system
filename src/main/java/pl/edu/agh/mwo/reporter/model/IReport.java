@@ -1,7 +1,7 @@
 package pl.edu.agh.mwo.reporter.model;
 public interface IReport {
 
-    void generateReport();
+    void updateReport();
     void printReport();
     void saveReportToFile();
 
