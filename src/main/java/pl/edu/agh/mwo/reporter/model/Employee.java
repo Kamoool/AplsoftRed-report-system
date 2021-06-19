@@ -41,11 +41,16 @@ public class Employee {
     public void addProject(Project project) {
         if (!this.projects.contains(project))
             this.projects.add(project);
+        else {
+            for (Project project1 : projects) {
+                if (project1.equals(project))
+                    project.getTasks().forEach(project1::addTask);
+            }
+        }
     }
 
     public void removeProject(Project project) {
-        if (this.projects.contains(project))
-            this.projects.remove(project);
+        this.projects.remove(project);
     }
 
     public Project findProjectByName(String projectName) {

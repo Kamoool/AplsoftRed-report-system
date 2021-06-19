@@ -37,8 +37,7 @@ public class Project {
     }
 
     public void removeTask(Task task) {
-        if (this.tasks.contains(task))
-            this.tasks.remove(task);
+        this.tasks.remove(task);
     }
 
     public Task findTaskByName(String taskName) {
