@@ -1,5 +1,6 @@
 package pl.edu.agh.mwo.reporter.model;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,22 +10,21 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ProjectReport implements IReport{
+public class EmployeeReport implements IReport{
 
     private final SimpleDateFormat REPORT_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy 'at' HH:mm:ss");
     private final SimpleDateFormat FILE_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
-    private final String LINE_FORMAT = "%-10s | %10s\n";
-    
+
 
     private String head;
     private String legend;
-    private List<Project> projects;
+    private List<Employee> employees;
     private String reportBody;
 
-    public ProjectReport(List<Project> projects) {
+    public EmployeeReport(List<Employee> employees) {
         this.head = "Report #" + this.hashCode() + "\n";
-        this.legend = String.format(LINE_FORMAT, "Projekt", "Godziny");
-        this.projects = projects;
+        this.legend = String.format("Pracownik | Projekty... | Suma");
+        this.employees = employees;
         updateReport();
     }
 
@@ -34,15 +34,23 @@ public class ProjectReport implements IReport{
         sb.append(head);
         sb.append(legend);
 
-        for (Project project : projects) {
-            double projectHoursSum = project.getTasks().stream()
-                    .map(x -> x.getHours())
-                    .reduce(0.0, Double::sum);
+        for (Employee employee : employees) {
+            double employeeHoursSum = 0.0;
 
-            sb.append(String.format(LINE_FORMAT, project.getName(), projectHoursSum));
+            sb.append(employee.getFirstName() + " " + employee.getLastName() + " | ");
+
+            for (Project project : employee.getProjects()){
+                double projectHoursSum = project.getTasks().stream()
+                        .map(x -> x.getHours())
+                        .reduce(0.0, Double::sum);
+
+                sb.append(project.getName() + " -> " + projectHoursSum + "hrs | ");
+                employeeHoursSum = employeeHoursSum + projectHoursSum;
+            }
+            sb.append("Total -> " + employeeHoursSum + "hrs");
         }
 
-        sb.append("Project report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
+        sb.append("Employee report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }
 
@@ -52,15 +60,15 @@ public class ProjectReport implements IReport{
     }
 
     @Override
-    public void saveReportToFile(){
+    public void saveReportToFile() {
         //TODO ustalic gdzie przechowujemy reporty, czy w jednym miejscu czy np. podajemy path na wejscie
-        String reportFilePath = new File("ProjRep_" + FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
+        String reportFilePath = new File("EmplRep_" + FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
         try {
             Files.write(Paths.get(reportFilePath), Arrays.asList(reportBody.split("\n")));
         } catch (IOException e) {
             System.out.println("Error: unalbe to create file " + reportFilePath);
             e.printStackTrace();
         }
-        System.out.println("File " + reportFilePath + " created succesfully");        
+        System.out.println("File " + reportFilePath + " created succesfully");
     }
 }
