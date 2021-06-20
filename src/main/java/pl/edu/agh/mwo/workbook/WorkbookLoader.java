@@ -14,7 +14,6 @@ public class WorkbookLoader {
     
     
     public WorkbookLoader(File file) {
-        super();
         this.file = file;
     }
 

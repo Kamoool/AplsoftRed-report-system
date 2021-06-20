@@ -17,23 +17,39 @@ import pl.edu.agh.mwo.reporter.model.Task;
 
 public class WorkbookReader {
     
+    List<Employee> employees = new ArrayList<>();
+    
+    List<File> files = new ArrayList();
+    
+    public WorkbookReader(List<String> filePaths) {
+
+        for ( String filePath : filePaths) {
+            this.files.add(new File(filePath));
+        }
+    }
+
     public Company getCompany() {
         return new Company(this.getEmployees());
     }
     
-    public  List <Employee> getEmployees(){
+    public  List <Employee> readEmployees(List<File> files){
         
-        WorkbookLoader wl = new WorkbookLoader(new File("src/main/resources/Kowalski_Jan.xls"));
+        for (File file : files) {
+        WorkbookLoader wl = new WorkbookLoader(file);
         Workbook wb = wl.openWorkbook();
-        List<Employee> employees = new ArrayList<>();
         String [] SplitedWorkbookName = wl.getWorkbookName().split("_");
         String surname = SplitedWorkbookName[0];
         String name = SplitedWorkbookName[1].replaceFirst("[.][^.]+$", "");
         Employee e = new Employee(name, surname, getProjects(wb));
         employees.add(e);
-        return employees; 
+        }
+        return employees;
     }
     
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
 
     private List<Project> getProjects(Workbook wb){
         

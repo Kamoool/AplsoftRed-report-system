@@ -1,27 +1,20 @@
 package pl.edu.agh.mwo.reporter;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-
 import org.apache.commons.cli.*;
-import org.apache.poi.ss.usermodel.Workbook;
 import pl.edu.agh.mwo.fileBrowser.FileBrowser;
 import pl.edu.agh.mwo.reporter.model.*;
-import pl.edu.agh.mwo.workbook.WorkbookLoader;
 import pl.edu.agh.mwo.workbook.WorkbookReader;
 
 public class Main {
     public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
 
-        Object[] parsedArguments = parseArguments(args);
+       // Object[] parsedArguments = parseArguments(args);
 
         //TODO - SEND DATA TO FUNCTIONS
 
@@ -62,18 +55,28 @@ public class Main {
         Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
-
-
-        new ProjectReport(company1).printReport();
-        new ProjectReport(company1).printReport();
-        new ProjectReport(company1).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
-        new ProjectReport(company1).printReport(LocalDate.of(2015,1,1), LocalDate.now());
-
-
+        
+        new EmployeeReport(company1.getEmployees()).printReport();
+        FileBrowser fileBrowser = new FileBrowser("xls");
+        List<String> filePaths = fileBrowser.browse("src/main/resources/");
+        filePaths.forEach(f -> System.out.println(f));
+      
+        WorkbookReader wr = new WorkbookReader(filePaths);
         Company company11 = wr.getCompany();
+        
+//       wr.getEmployees().forEach(e -> System.out.println(e));
+        
+        Employee empl11 = wr.getEmployees().get(0);
 
 
-        new ProjectReport(company11).printReport();
+
+        new ProjectReport(empl1.getProjects()).printReport();
+  
+        new ProjectReport(empl1.getProjects()).printReport(LocalDate.of(2000,1,1), LocalDate.now());
+
+
+        new TaskReport("Analiza wymaga�", empl1.getProjects()).printReport();
+
 
         new ProjectReport(company11).printReport();
         new ProjectReport(company11).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
