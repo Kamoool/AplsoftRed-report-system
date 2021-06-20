@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Object[] parsedArguments = parseArguments(args);
+       // Object[] parsedArguments = parseArguments(args);
 
         //TODO - SEND DATA TO FUNCTIONS
 
@@ -40,9 +40,16 @@ public class Main {
         Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
+        
+        new EmployeeReport(company1.getEmployees()).printReport();
+        FileBrowser fileBrowser = new FileBrowser("xls");
+        List<String> filePaths = fileBrowser.browse("src/main/resources/");
+        filePaths.forEach(f -> System.out.println(f));
       
-        WorkbookReader wr = new WorkbookReader();
+        WorkbookReader wr = new WorkbookReader(filePaths);
         Company company11 = wr.getCompany();
+        
+//       wr.getEmployees().forEach(e -> System.out.println(e));
         
         Employee empl11 = wr.getEmployees().get(0);
 
@@ -62,10 +69,7 @@ public class Main {
         new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
 
 
-        new EmployeeReport(company1.getEmployees()).printReport();
-      FileBrowser fileBrowser = new FileBrowser("xls");
-        List<String> filePaths = fileBrowser.browse("src/main/resources/");
-        filePaths.forEach(f -> System.out.println(f));
+
     }
 
 
