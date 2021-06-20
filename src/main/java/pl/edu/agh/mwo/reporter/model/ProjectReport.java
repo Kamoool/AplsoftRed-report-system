@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ public class ProjectReport implements IReport{
 
     private final SimpleDateFormat REPORT_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy 'at' HH:mm:ss");
     private final SimpleDateFormat FILE_DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+    private final DateTimeFormatter SHORT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final String LINE_FORMAT = "%-30s | %s\n";
     
 
@@ -29,27 +32,52 @@ public class ProjectReport implements IReport{
     }
 
     @Override
-    public void updateReport() {
+    public void updateReport(LocalDate from, LocalDate to) {
         StringBuilder sb = new StringBuilder();
-        sb.append(head).append("\n").append(legend);
+        sb.append(head);
+        if (from.isAfter(to)){
+            sb.append("ERROR: 'FROM' DATE CANNOT BE BEFORE 'TO' DATE.\n");
+            reportBody = sb.toString();
+            return;
+        }
+        sb.append(legend);
 
         for (Project project : projects) {
             double projectHoursSum = project.getTasks().stream()
+                    .filter(x -> x.getDate().isBefore(to))
+                    .filter(x -> x.getDate().isAfter(from))
                     .map(x -> x.getHours())
                     .reduce(0.0, Double::sum);
 
-            sb.append(String.format(LINE_FORMAT, project.getName(), projectHoursSum));
+            String projectName = project.getName();
+            if (projectName.length() > 30){
+                projectName = projectName.substring(0, 30 - 2) + "..";
+            }
+            sb.append(String.format(LINE_FORMAT, projectName, projectHoursSum));
         }
 
-        sb.append("\n");
+        sb.append("Report generated for period from " + SHORT_DATE_FORMATTER.format(from) + " to " + SHORT_DATE_FORMATTER.format(to) + "\n");
         sb.append("Project report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }
 
     @Override
+    public void updateReport() {
+        updateReport(LocalDate.parse("1900-01-01"), LocalDate.now());
+    }
+
+    @Override
     public void printReport() {
+        updateReport();
         System.out.println(reportBody);
     }
+
+    @Override
+    public void printReport(LocalDate from, LocalDate to) {
+        updateReport(from, to);
+        System.out.println(reportBody);
+    }
+
 
     @Override
     public void saveReportToFile(){

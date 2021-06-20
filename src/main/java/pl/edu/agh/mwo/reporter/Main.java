@@ -36,8 +36,10 @@ public class Main {
 
         new ProjectReport(empl1.getProjects()).printReport();
         new ProjectReport(empl2.getProjects()).printReport();
+        new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
+        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
 
-        new EmployeeReport(company1.getEmployees()).printReport();
+//        new EmployeeReport(company1.getEmployees()).printReport();
 
     }
 }
