@@ -37,7 +37,7 @@ public class Main {
         Company company = new Company();
 
         //TODO - CHOOSE CORRECT REPORT TYPE
-        String s = handleReportType((int) parsedArguments[1], company);
+        IReport report = handleReportType((int) parsedArguments[1], company);
 
 
         // mockData
@@ -83,28 +83,31 @@ public class Main {
         new TaskReport("Aktualizacja danych", company1).printReport();
 
 
-        new EmployeeReport(company1.getEmployees()).printReport();
+        new EmployeeReport(company1).printReport();
 
 
     }
 
-    private static String handleReportType(int reportType, Company company) {
+    private static IReport handleReportType(int reportType, Company company) {
+
+        IReport report = null;
 
         switch (reportType) {
             case 1:
-                //TODO - REPORT 1 RUN
-
+                report = new ProjectReport(company);
+                break;
             case 2:
-                //TODO - REPORT 2 RUN
-
+                report = new EmployeeReport(company);
+                break;
             case 3:
-                //TODO - REPORT 3 RUN
-
+                report = new TaskReport(company);
+                break;
             case 4:
                 //TODO - REPORT 4 RUN
 
         }
-        return "Tutaj dodac cos fajnego";
+
+        return report;
     }
 
 
