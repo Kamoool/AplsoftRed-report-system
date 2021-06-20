@@ -1,6 +1,8 @@
 package pl.edu.agh.mwo.reporter.model;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Objects;
 
 public class Task {
@@ -13,6 +15,15 @@ public class Task {
         this.name = name;
         this.date = date;
         this.hours = hours;
+    }
+
+    public Task(String stringCellValue, Date dateCellValue, double numericCellValue) {
+        this(stringCellValue, convertDateToLocalDate(dateCellValue), numericCellValue);
+    }
+    private static LocalDate convertDateToLocalDate(Date date) {
+        return date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
     public String getName() {
@@ -30,7 +41,7 @@ public class Task {
     public void setHours(double hours) {
         this.hours = hours;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
