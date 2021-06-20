@@ -30,6 +30,7 @@ public class TaskReport implements IReport{
         for (Employee employee : company.getEmployees()) {
             this.projects.addAll(employee.getProjects());
         }
+        updateReport(taskName);
     }
 
     public TaskReport(Company company) {
@@ -42,6 +43,10 @@ public class TaskReport implements IReport{
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public String getReportBody() {
+        return reportBody;
     }
 
     @Override
