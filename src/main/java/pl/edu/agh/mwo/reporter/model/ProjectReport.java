@@ -37,6 +37,7 @@ public class ProjectReport implements IReport{
         }
         this.from = LocalDate.of(1900,1,1);
         this.to = LocalDate.now();
+        updateReport();
     }
 
     public void setFrom(LocalDate from) {
@@ -58,6 +59,14 @@ public class ProjectReport implements IReport{
 
     public LocalDate getTo() {
         return to;
+    }
+
+    public String getReportBody() {
+        return reportBody;
+    }
+
+    public void setReportBody(String reportBody) {
+        this.reportBody = reportBody;
     }
 
     @Override

@@ -72,20 +72,19 @@ public class Main {
 
         Company company11 = wr.getCompany();
 
-        Employee empl11 = wr.getEmployees().get(0);
 
+        new ProjectReport(company11).printReport();
 
-        new ProjectReport(empl11.getProjects()).printReport();
-
-        new ProjectReport(empl2.getProjects()).printReport();
-        new ProjectReport(empl11.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
-        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
+        new ProjectReport(company11).printReport();
+        new ProjectReport(company11).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
+        new ProjectReport(company1).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
 
 
         new TaskReport("Aktualizacja danych", company1).printReport();
 
 
         new EmployeeReport(company1.getEmployees()).printReport();
+
 
     }
 
