@@ -22,10 +22,10 @@ public class EmployeeReport implements IReport{
     private List<Employee> employees;
     private String reportBody;
 
-    public EmployeeReport(List<Employee> employees) {
+    public EmployeeReport(Company company) {
         this.head = "Report #" + this.hashCode() + "\n";
         this.legend = String.format("Pracownik | ");
-        this.employees = employees;
+        this.employees = company.getEmployees();
         updateReport();
     }   
         
