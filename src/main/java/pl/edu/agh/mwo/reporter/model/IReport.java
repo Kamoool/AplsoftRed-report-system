@@ -5,5 +5,6 @@ public interface IReport {
     void updateReport();
     void printReport();
     void saveReportToFile();
+    String getReportBody();
 
 }

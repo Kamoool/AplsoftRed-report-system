@@ -125,4 +125,9 @@ public class EmployeeReport implements IReport{
         }
         System.out.println("File " + reportFilePath + " created succesfully");
     }
+
+    @Override
+    public String getReportBody(){
+        return reportBody;
+    }
 }
