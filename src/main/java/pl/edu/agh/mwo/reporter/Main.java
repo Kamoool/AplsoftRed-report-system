@@ -1,17 +1,22 @@
 package pl.edu.agh.mwo.reporter;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+import org.apache.poi.ss.usermodel.Workbook;
 import pl.edu.agh.mwo.fileBrowser.FileBrowser;
 import pl.edu.agh.mwo.reporter.model.*;
+import pl.edu.agh.mwo.workbook.WorkbookLoader;
+import pl.edu.agh.mwo.workbook.WorkbookReader;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello World!");
-
-
+      
         // mockData
         Task task1 = new Task("Aktualizacja danych", LocalDate.of(2020, 1, 8), 7);
         Task task2 = new Task("Przetwarzanie danych", LocalDate.of(2012, 5, 6), 4);
@@ -34,17 +39,20 @@ public class Main {
         Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
+      
+        WorkbookReader wr = new WorkbookReader();
+        Company company11 = wr.getCompany();
+        
+        Employee empl11 = wr.getEmployees().get(0);
+
 
         new ProjectReport(empl1.getProjects()).printReport();
+
         new ProjectReport(empl2.getProjects()).printReport();
         new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
         new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
 
         new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
-
-//        new EmployeeReport(company1.getEmployees()).printReport();
-
-
 
         FileBrowser fileBrowser = new FileBrowser("xls");
         List<String> filePaths = fileBrowser.browse("src/main/resources/");
