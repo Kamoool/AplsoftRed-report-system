@@ -131,11 +131,24 @@ public class Main {
         options.addOption("dateFilter", true, "filter with date <dd/MM/yyyy-dd/MM/yyyy>");
         options.addOption("employeeFilter", true, "name of employee to be filtered");
         options.addOption("keyWordSearch", true, "keyword filter");
-        options.addOption("export", true, "path to generated .xlsx report file");
-
+        options.addOption("export", true, "path to generated .xls report file");
+        options.addOption("h", false, "prints help");
 
         try {
             CommandLine cmd = parser.parse(options, args);
+
+            if(cmd.hasOption("h")){
+                System.out.println("Available commands:\n" +
+                        "-destination <path>                      path to source file / folders\n" +
+                        "-reportType <1-4>                        choose report type\n" +
+                        "-dateFilter <dd/MM/yyyy-dd/MM/yyyy>      choose date for filtering\n" +
+                        "-employeeFilter <surname_name>           person filter surname_name\n" +
+                        "-keyWordSearch <word>                    word filter\n" +
+                        "-export <path\\filename.xls>             path to exported file\n" +
+                        "-h                                       print help\n" +
+                        "check ReadMe file for more information");
+                System.exit(0);
+            }
 
             if (!cmd.hasOption("destination")) {
                 throw new MissingArgumentException("DESTINATION MUST BE DEFINED!");
