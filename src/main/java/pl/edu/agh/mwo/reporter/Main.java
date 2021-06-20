@@ -2,7 +2,9 @@ package pl.edu.agh.mwo.reporter;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
+import pl.edu.agh.mwo.fileBrowser.FileBrowser;
 import pl.edu.agh.mwo.reporter.model.*;
 
 public class Main {
@@ -41,6 +43,12 @@ public class Main {
         new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
 
 //        new EmployeeReport(company1.getEmployees()).printReport();
+
+
+
+        FileBrowser fileBrowser = new FileBrowser("xls");
+        List<String> filePaths = fileBrowser.browse("src/main/resources/");
+        filePaths.forEach(f -> System.out.println(f));
 
     }
 }
