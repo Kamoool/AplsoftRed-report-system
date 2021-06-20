@@ -8,13 +8,34 @@ import java.io.File;
 import java.io.IOException;
 
 public class WorkbookLoader {
+    
 
-    public static Workbook openWorkbook() {
+    private File file;
+    
+    
+    public WorkbookLoader(File file) {
+        super();
+        this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
+    
+    public void setFile(File file) {
+        this.file = file;
+    }
+    
+    public Workbook openWorkbook() {
         try {
-            return WorkbookFactory.create(new File("src/main/resources/Kowalski_Jan.xls"));
+            return WorkbookFactory.create(file);
         } catch (EncryptedDocumentException | IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+    public String getWorkbookName() {
+        
+        return file.getName();
     }
 }
