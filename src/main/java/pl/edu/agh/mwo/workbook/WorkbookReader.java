@@ -5,6 +5,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -37,7 +38,12 @@ public class WorkbookReader {
         for (File file : files) {
             WorkbookLoader wl = new WorkbookLoader(file);
             Workbook wb = wl.openWorkbook();
-            String[] SplitedWorkbookName = wl.getWorkbookName().split("_");
+            String substring = "";
+            if (wl.getWorkbookName().contains(" "))
+                substring = wl.getWorkbookName().substring(0, wl.getWorkbookName().indexOf(" "));
+            else
+                substring = wl.getWorkbookName();
+            String[] SplitedWorkbookName = substring.split("_");
             String surname = SplitedWorkbookName[0];
             String name = SplitedWorkbookName[1].replaceFirst("[.][^.]+$", "");
             Employee e = new Employee(name, surname, getProjects(wb));
@@ -68,6 +74,7 @@ public class WorkbookReader {
         List<Task> tasks = new ArrayList();
         for (Row row : sheet) {
             try {
+//                row.getCell(1).setCellType(CellType.STRING);
                 tasks.add(new Task(row.getCell(1).getStringCellValue(), row.getCell(0).getDateCellValue(), row.getCell(2).getNumericCellValue()));
             } catch (DateTimeParseException e) {
                 System.err.println("Niepoprawna data");
@@ -80,6 +87,4 @@ public class WorkbookReader {
         }
         return tasks;
     }
-
-
 }
