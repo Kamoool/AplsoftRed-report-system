@@ -16,46 +16,46 @@ import pl.edu.agh.mwo.reporter.model.Task;
 
 
 public class WorkbookReader {
-    
-    List<Employee> employees = new ArrayList<>();
-    
-    List<File> files = new ArrayList();
-    
-    public WorkbookReader(List<String> filePaths) {
 
-        for ( String filePath : filePaths) {
+    List<Employee> employees = new ArrayList<>();
+
+    List<File> files = new ArrayList();
+
+    public WorkbookReader(List<String> filePaths) {
+        for (String filePath : filePaths) {
             this.files.add(new File(filePath));
         }
     }
 
     public Company getCompany() {
-        return new Company(this.getEmployees());
+//        return new Company(this.getEmployees());
+        return new Company(this.readEmployees(files));
     }
-    
-    public  List <Employee> readEmployees(List<File> files){
-        
+
+    public List<Employee> readEmployees(List<File> files) {
+
         for (File file : files) {
-        WorkbookLoader wl = new WorkbookLoader(file);
-        Workbook wb = wl.openWorkbook();
-        String [] SplitedWorkbookName = wl.getWorkbookName().split("_");
-        String surname = SplitedWorkbookName[0];
-        String name = SplitedWorkbookName[1].replaceFirst("[.][^.]+$", "");
-        Employee e = new Employee(name, surname, getProjects(wb));
-        employees.add(e);
+            WorkbookLoader wl = new WorkbookLoader(file);
+            Workbook wb = wl.openWorkbook();
+            String[] SplitedWorkbookName = wl.getWorkbookName().split("_");
+            String surname = SplitedWorkbookName[0];
+            String name = SplitedWorkbookName[1].replaceFirst("[.][^.]+$", "");
+            Employee e = new Employee(name, surname, getProjects(wb));
+            employees.add(e);
         }
         return employees;
     }
-    
+
 
     public List<Employee> getEmployees() {
         return employees;
     }
 
-    private List<Project> getProjects(Workbook wb){
-        
-        
-       List<Project> projects = new ArrayList();
-        
+    private List<Project> getProjects(Workbook wb) {
+
+
+        List<Project> projects = new ArrayList();
+
         for (Sheet sheet : wb) {
             Project project = new Project(sheet.getSheetName());
             project.setTasks(getTasks(sheet));
@@ -63,24 +63,23 @@ public class WorkbookReader {
         }
         return projects;
     }
-    
-    private List<Task> getTasks(Sheet sheet){
+
+    private List<Task> getTasks(Sheet sheet) {
         List<Task> tasks = new ArrayList();
         for (Row row : sheet) {
             try {
-            tasks.add(new Task(row.getCell(1).getStringCellValue(), row.getCell(0).getDateCellValue(), row.getCell(2).getNumericCellValue()));
-            }catch(DateTimeParseException e) {
-                System.out.println("Niepoprawna data");
-            }catch(NumberFormatException e2) {
-                System.out.println("niepoprawny numer");
-            }catch(IllegalStateException e3) {
-                System.out.println("Niepoprawny format danych: " + e3.getMessage() + row.getCell(0).getStringCellValue()  + row.getCell(1).getStringCellValue()  + row.getCell(2).getStringCellValue() );
-           }
-           
+                tasks.add(new Task(row.getCell(1).getStringCellValue(), row.getCell(0).getDateCellValue(), row.getCell(2).getNumericCellValue()));
+            } catch (DateTimeParseException e) {
+                System.err.println("Niepoprawna data");
+            } catch (NumberFormatException e2) {
+                System.err.println("niepoprawny numer");
+            } catch (IllegalStateException e3) {
+                System.err.println("Niepoprawny format danych: " + e3.getMessage() + row.getCell(0).getStringCellValue() + row.getCell(1).getStringCellValue() + row.getCell(2).getStringCellValue());
+            }
+
         }
         return tasks;
     }
-    
-    
-    
+
+
 }

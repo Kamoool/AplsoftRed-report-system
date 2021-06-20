@@ -32,12 +32,13 @@ public class FileBrowser {
         File startFile = new File(dirPath);
 
         File[] listOfFiles = startFile.listFiles();
-        startPath += File.separator;
+//        startPath += File.separator;
 
         for (File file : listOfFiles) {
             if (!file.isDirectory()) {
                if(correctFileExtension(file, fileExtension)) {
                    collectedFiles.add(startPath + File.separator + file.getName());
+//                   collectedFiles.add(File.separator + file.getName());
                }
             } else {
                 browseTree(dirPath + File.separator + file.getName(), startPath, collectedFiles);

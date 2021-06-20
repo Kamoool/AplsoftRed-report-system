@@ -2,8 +2,10 @@ package pl.edu.agh.mwo.reporter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.cli.*;
 import pl.edu.agh.mwo.fileBrowser.FileBrowser;
 import pl.edu.agh.mwo.reporter.model.*;
@@ -14,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-       // Object[] parsedArguments = parseArguments(args);
+        Object[] parsedArguments = parseArguments(args);
 
         //TODO - SEND DATA TO FUNCTIONS
 
@@ -24,69 +26,69 @@ public class Main {
         filePaths.forEach(f -> System.out.println(f));
 
         //TODO - SEND DATA TO WORKBOOK LOADER
-        WorkbookReader wr = new WorkbookReader();
+        List<String> testPaths = new ArrayList<>();
 
-        //TODO WE GET COMPANY
-        Company company = new Company();
+        WorkbookReader wr = new WorkbookReader(filePaths);
+        Company company = wr.getCompany();
+        System.out.println(company.getEmployees().size());
 
         //TODO - CHOOSE CORRECT REPORT TYPE
         IReport report = handleReportType((int) parsedArguments[1], company);
 
+        report.printReport();
+
 
         // mockData
-        Task task1 = new Task("Aktualizacja danych", LocalDate.of(2020, 1, 8), 7);
-        Task task2 = new Task("Przetwarzanie danych", LocalDate.of(2012, 5, 6), 4);
-        Task task3 = new Task("Implementacja prototypu", LocalDate.of(2015, 1, 22), 8);
-        Task task4 = new Task("Aktualizacja danych", LocalDate.of(2016, 9, 8), 17);
+//        Task task1 = new Task("Aktualizacja danych", LocalDate.of(2020, 1, 8), 7);
+//        Task task2 = new Task("Przetwarzanie danych", LocalDate.of(2012, 5, 6), 4);
+//        Task task3 = new Task("Implementacja prototypu", LocalDate.of(2015, 1, 22), 8);
+//        Task task4 = new Task("Aktualizacja danych", LocalDate.of(2016, 9, 8), 17);
+//
+//        Project project1 = new Project("Projekt testowy", Arrays.asList(task1, task2));
+//        Project project2 = new Project("Projekt interfejsu graficznego", Arrays.asList(task3, task4));
+//
+//        Employee empl1 = new Employee("Jon", "Snow", Arrays.asList(project1, project2));
+//
+//        Task task5 = new Task("Specyfikacja wymagań", LocalDate.of(2020, 2, 8), 3);
+//        Task task6 = new Task("Integracja", LocalDate.of(2013, 4, 16), 4);
+//        Task task7 = new Task("Implementacja prototypu", LocalDate.of(2015, 11, 27), 12.5);
+//        Task task8 = new Task("Aktualizacja danych", LocalDate.of(2016, 9, 8), 17);
+//
+//        Project project3 = new Project("Projekt narzędzia do zarządzania", Arrays.asList(task5, task6, task7, task8));
+//        Project project4 = new Project("Projekt narzędzia do statystyki", Arrays.asList(task8));
+//
+//        Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
+//
+//        Company company1 = new Company(Arrays.asList(empl1, empl2));
+//
+//        new EmployeeReport(company1).printReport();
+//        FileBrowser fileBrowser = new FileBrowser("xls");
+//        List<String> filePaths = fileBrowser.browse("src/main/resources/");
+//        filePaths.forEach(f -> System.out.println(f));
 
-        Project project1 = new Project("Projekt testowy", Arrays.asList(task1, task2));
-        Project project2 = new Project("Projekt interfejsu graficznego", Arrays.asList(task3, task4));
 
-        Employee empl1 = new Employee("Jon", "Snow", Arrays.asList(project1, project2));
-
-        Task task5 = new Task("Specyfikacja wymagań", LocalDate.of(2020, 2, 8), 3);
-        Task task6 = new Task("Integracja", LocalDate.of(2013, 4, 16), 4);
-        Task task7 = new Task("Implementacja prototypu", LocalDate.of(2015, 11, 27), 12.5);
-        Task task8 = new Task("Aktualizacja danych", LocalDate.of(2016, 9, 8), 17);
-
-        Project project3 = new Project("Projekt narzędzia do zarządzania", Arrays.asList(task5, task6, task7, task8));
-        Project project4 = new Project("Projekt narzędzia do statystyki", Arrays.asList(task8));
-
-        Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
-
-        Company company1 = new Company(Arrays.asList(empl1, empl2));
-        
-        new EmployeeReport(company1.getEmployees()).printReport();
-        FileBrowser fileBrowser = new FileBrowser("xls");
-        List<String> filePaths = fileBrowser.browse("src/main/resources/");
-        filePaths.forEach(f -> System.out.println(f));
-      
-        WorkbookReader wr = new WorkbookReader(filePaths);
-        Company company11 = wr.getCompany();
-        
 //       wr.getEmployees().forEach(e -> System.out.println(e));
-        
-        Employee empl11 = wr.getEmployees().get(0);
 
-
-
-        new ProjectReport(empl1.getProjects()).printReport();
-  
-        new ProjectReport(empl1.getProjects()).printReport(LocalDate.of(2000,1,1), LocalDate.now());
-
-
-        new TaskReport("Analiza wymaga�", empl1.getProjects()).printReport();
-
-
-        new ProjectReport(company11).printReport();
-        new ProjectReport(company11).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
-        new ProjectReport(company1).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
-
-
-        new TaskReport("Aktualizacja danych", company1).printReport();
-
-
-        new EmployeeReport(company1).printReport();
+//        Employee empl11 = wr.getEmployees().get(0);
+//
+//
+//        new ProjectReport(empl1.getProjects()).printReport();
+//
+//        new ProjectReport(empl1.getProjects()).printReport(LocalDate.of(2000, 1, 1), LocalDate.now());
+//
+//
+//        new TaskReport("Analiza wymaga�", empl1.getProjects()).printReport();
+//
+//
+//        new ProjectReport(company11).printReport();
+//        new ProjectReport(company11).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
+//        new ProjectReport(company1).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
+//
+//
+//        new TaskReport("Aktualizacja danych", company1).printReport();
+//
+//
+//        new EmployeeReport(company1).printReport();
 
 
     }
@@ -140,7 +142,7 @@ public class Main {
         try {
             CommandLine cmd = parser.parse(options, args);
 
-            if(cmd.hasOption("h")){
+            if (cmd.hasOption("h")) {
                 System.out.println("Available commands:\n" +
                         "-destination <path>                      path to source file / folders\n" +
                         "-reportType <1-4>                        choose report type\n" +
