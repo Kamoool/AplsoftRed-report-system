@@ -10,13 +10,28 @@ import pl.edu.agh.mwo.reporter.model.*;
 import pl.edu.agh.mwo.workbook.WorkbookReader;
 
 public class Main {
-    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void main(String[] args) {
 
        // Object[] parsedArguments = parseArguments(args);
 
         //TODO - SEND DATA TO FUNCTIONS
+
+        //TODO - SEND DATA TO FOLDER PARSER - DONE
+        FileBrowser fileBrowser = new FileBrowser("xls");
+        List<String> filePaths = fileBrowser.browse((String) parsedArguments[0]); // C://Users/cos/workbooks    lub C://Users/cos/workbooks/Kowalski_jan.xls
+        filePaths.forEach(f -> System.out.println(f));
+
+        //TODO - SEND DATA TO WORKBOOK LOADER
+        WorkbookReader wr = new WorkbookReader();
+
+        //TODO WE GET COMPANY
+        Company company = new Company();
+
+        //TODO - CHOOSE CORRECT REPORT TYPE
+        IReport report = handleReportType((int) parsedArguments[1], company);
+
 
         // mockData
         Task task1 = new Task("Aktualizacja danych", LocalDate.of(2020, 1, 8), 7);
@@ -60,16 +75,42 @@ public class Main {
         new ProjectReport(empl1.getProjects()).printReport(LocalDate.of(2000,1,1), LocalDate.now());
 
 
-        new TaskReport("Analiza wymagañ", empl1.getProjects()).printReport();
-
-        new ProjectReport(empl2.getProjects()).printReport();
-        new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
-        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
-
-        new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
+        new TaskReport("Analiza wymagaï¿½", empl1.getProjects()).printReport();
 
 
+        new ProjectReport(company11).printReport();
+        new ProjectReport(company11).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
+        new ProjectReport(company1).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
 
+
+        new TaskReport("Aktualizacja danych", company1).printReport();
+
+
+        new EmployeeReport(company1).printReport();
+
+
+    }
+
+    private static IReport handleReportType(int reportType, Company company) {
+
+        IReport report = null;
+
+        switch (reportType) {
+            case 1:
+                report = new ProjectReport(company);
+                break;
+            case 2:
+                report = new EmployeeReport(company);
+                break;
+            case 3:
+                report = new TaskReport(company);
+                break;
+            case 4:
+                //TODO - REPORT 4 RUN
+
+        }
+
+        return report;
     }
 
 
@@ -90,18 +131,32 @@ public class Main {
         //parsing options definition
         options.addOption("destination", true, "path of data files");
         options.addOption("reportType", true, "(1 - 4), type of report to be generated");
-        options.addOption("dateFilter", true, "filter with date <yyyy/mmm/dd-yyyy/mm/dd>");
+        options.addOption("dateFilter", true, "filter with date <dd/MM/yyyy-dd/MM/yyyy>");
         options.addOption("employeeFilter", true, "name of employee to be filtered");
         options.addOption("keyWordSearch", true, "keyword filter");
         options.addOption("export", true, "path to generated .xls report file");
+        options.addOption("h", false, "prints help");
 
         try {
             CommandLine cmd = parser.parse(options, args);
 
+            if(cmd.hasOption("h")){
+                System.out.println("Available commands:\n" +
+                        "-destination <path>                      path to source file / folders\n" +
+                        "-reportType <1-4>                        choose report type\n" +
+                        "-dateFilter <dd/MM/yyyy-dd/MM/yyyy>      choose date for filtering\n" +
+                        "-employeeFilter <surname_name>           person filter surname_name\n" +
+                        "-keyWordSearch <word>                    word filter\n" +
+                        "-export <path\\filename.xls>             path to exported file\n" +
+                        "-h                                       print help\n" +
+                        "check ReadMe file for more information");
+                System.exit(0);
+            }
+
             if (!cmd.hasOption("destination")) {
                 throw new MissingArgumentException("DESTINATION MUST BE DEFINED!");
             } else {
-                output[0] = cmd.getOptionValue("destination");
+                output[0] = (String) cmd.getOptionValue("destination");
             }
             if (!cmd.hasOption("reportType")) {
                 throw new MissingArgumentException("REPORT TYPE MUST BE DEFINED!");
@@ -110,7 +165,7 @@ public class Main {
             }
 
             if (cmd.hasOption("dateFilter")) {
-                boolean filterFromDate = cmd.getOptionValue("dateFilter").indexOf("-") == cmd.getOptionValue("dateFilter").length()-1;
+                boolean filterFromDate = cmd.getOptionValue("dateFilter").indexOf("-") == cmd.getOptionValue("dateFilter").length() - 1;
                 boolean filterToDate = cmd.getOptionValue("dateFilter").indexOf("-") == 0;
                 String[] dates = cmd.getOptionValue("dateFilter").split("-");
                 if (!filterToDate && !filterFromDate) {
