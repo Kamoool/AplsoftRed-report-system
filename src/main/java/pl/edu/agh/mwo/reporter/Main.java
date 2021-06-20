@@ -26,18 +26,19 @@ public class Main {
         Task task7 = new Task("Implementacja prototypu", LocalDate.of(2015, 11, 27), 12.5);
         Task task8 = new Task("Aktualizacja danych", LocalDate.of(2016, 9, 8), 17);
 
-        Project project3 = new Project("Projekt narzędzia do zarządzania", Arrays.asList(task5, task6, task7));
+        Project project3 = new Project("Projekt narzędzia do zarządzania", Arrays.asList(task5, task6, task7, task8));
         Project project4 = new Project("Projekt narzędzia do statystyki", Arrays.asList(task8));
 
         Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
 
-
         new ProjectReport(empl1.getProjects()).printReport();
         new ProjectReport(empl2.getProjects()).printReport();
         new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
         new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
+
+        new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
 
 //        new EmployeeReport(company1.getEmployees()).printReport();
 

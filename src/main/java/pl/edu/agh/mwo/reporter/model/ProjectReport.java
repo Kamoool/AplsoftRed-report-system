@@ -23,16 +23,40 @@ public class ProjectReport implements IReport{
     private String legend;
     private List<Project> projects;
     private String reportBody;
+    private LocalDate from;
+    private LocalDate to;
 
     public ProjectReport(List<Project> projects) {
         this.head = "Report #" + this.hashCode() + "\n";
         this.legend = String.format(LINE_FORMAT, "Projekt", "Godziny");
         this.projects = projects;
-        updateReport();
+        this.from = LocalDate.of(1900,1,1);
+        this.to = LocalDate.now();
+    }
+
+    public void setFrom(LocalDate from) {
+        this.from = from;
+    }
+
+    public void setTo(LocalDate to) {
+        this.to = to;
+    }
+
+    public void setFromAndTo(LocalDate from, LocalDate to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    public LocalDate getFrom() {
+        return from;
+    }
+
+    public LocalDate getTo() {
+        return to;
     }
 
     @Override
-    public void updateReport(LocalDate from, LocalDate to) {
+    public void updateReport() {
         StringBuilder sb = new StringBuilder();
         sb.append(head);
         if (from.isAfter(to)){
@@ -62,20 +86,14 @@ public class ProjectReport implements IReport{
     }
 
     @Override
-    public void updateReport() {
-        updateReport(LocalDate.parse("1900-01-01"), LocalDate.now());
-    }
-
-    @Override
     public void printReport() {
         updateReport();
         System.out.println(reportBody);
     }
 
-    @Override
     public void printReport(LocalDate from, LocalDate to) {
-        updateReport(from, to);
-        System.out.println(reportBody);
+        setFromAndTo(from, to);
+        printReport();
     }
 
 
