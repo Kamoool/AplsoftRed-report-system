@@ -1,26 +1,33 @@
 package pl.edu.agh.mwo.fileBrowser;
-import pl.edu.agh.mwo.workbook.WorkbookReader;
+
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileBrowser {
+    private String fileExtension;
 
-    public static List<String> browse(String path) {
+    public FileBrowser(String fileExtension){
+        this.fileExtension = fileExtension;
+    }
+
+    public List<String> browse(String path) {
         List<String> files = new ArrayList<>();
 
         File startFile = new File(path);
         if(!startFile.isDirectory()){
-            files.add(path);
-            return files;
+            if(correctFileExtension(startFile, fileExtension)) {
+                files.add(path);
+            }
         } else {
           return  browseTree(path, path, files);
         }
-
+        return files;
     }
 
-    private static List<String> browseTree(String dirPath, String startPath,  List<String> collectedFiles ) {
+    private List<String> browseTree(String dirPath, String startPath,  List<String> collectedFiles ) {
 
         File startFile = new File(dirPath);
 
@@ -29,7 +36,9 @@ public class FileBrowser {
 
         for (File file : listOfFiles) {
             if (!file.isDirectory()) {
-                collectedFiles.add(startPath + File.separator + file.getName());
+               if(correctFileExtension(file, fileExtension)) {
+                   collectedFiles.add(startPath + File.separator + file.getName());
+               }
             } else {
                 browseTree(dirPath + File.separator + file.getName(), startPath, collectedFiles);
             }
@@ -37,4 +46,7 @@ public class FileBrowser {
         return collectedFiles;
     }
 
+    private static boolean correctFileExtension(File file, String extension){
+        return FilenameUtils.getExtension(file.getName()).equals(extension);
+    }
 }
