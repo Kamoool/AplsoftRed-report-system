@@ -7,9 +7,11 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectReport implements IReport{
 
@@ -26,10 +28,13 @@ public class ProjectReport implements IReport{
     private LocalDate from;
     private LocalDate to;
 
-    public ProjectReport(List<Project> projects) {
+    public ProjectReport(Company company) {
         this.head = "Report #" + this.hashCode() + "\n";
         this.legend = String.format(LINE_FORMAT, "Projekt", "Godziny");
-        this.projects = projects;
+        this.projects = new ArrayList<>();
+        for (Employee employee : company.getEmployees()) {
+            this.projects.addAll(employee.getProjects());
+        }
         this.from = LocalDate.of(1900,1,1);
         this.to = LocalDate.now();
     }
@@ -57,6 +62,9 @@ public class ProjectReport implements IReport{
 
     @Override
     public void updateReport() {
+        LocalDate newestDate = null;
+        LocalDate oldestDate = null;
+
         StringBuilder sb = new StringBuilder();
         sb.append(head);
         if (from.isAfter(to)){
@@ -67,11 +75,39 @@ public class ProjectReport implements IReport{
         sb.append(legend);
 
         for (Project project : projects) {
-            double projectHoursSum = project.getTasks().stream()
+
+            List<Task> filteredList = project.getTasks().stream()
                     .filter(x -> x.getDate().isBefore(to))
                     .filter(x -> x.getDate().isAfter(from))
+                    .collect(Collectors.toList());
+
+
+            double projectHoursSum = filteredList.stream()
                     .map(x -> x.getHours())
                     .reduce(0.0, Double::sum);
+
+            LocalDate projectNewestDate = filteredList.stream()
+                    .map(x -> x.getDate())
+                    .max(LocalDate::compareTo)
+                    .get();
+
+            LocalDate projectOldestDate = filteredList.stream()
+                    .map(x -> x.getDate())
+                    .min(LocalDate::compareTo)
+                    .get();
+
+            if (newestDate != null){
+                newestDate = projectNewestDate.isAfter(newestDate)? projectNewestDate : newestDate;
+            } else {
+                newestDate = projectNewestDate;
+            }
+
+            if (oldestDate != null){
+                oldestDate = projectOldestDate.isBefore(oldestDate)? projectOldestDate : oldestDate;
+            } else {
+                oldestDate = projectOldestDate;
+            }
+
 
             String projectName = project.getName();
             if (projectName.length() > 30){
@@ -81,6 +117,7 @@ public class ProjectReport implements IReport{
         }
 
         sb.append("Report generated for period from " + SHORT_DATE_FORMATTER.format(from) + " to " + SHORT_DATE_FORMATTER.format(to) + "\n");
+        sb.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(oldestDate) + ", newest comes from " + SHORT_DATE_FORMATTER.format(newestDate) + "\n");
         sb.append("Project report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }

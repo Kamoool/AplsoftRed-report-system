@@ -33,12 +33,12 @@ public class Main {
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
 
-        new ProjectReport(empl1.getProjects()).printReport();
-        new ProjectReport(empl2.getProjects()).printReport();
-        new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
-        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
+        new ProjectReport(company1).printReport();
+        new ProjectReport(company1).printReport();
+        new ProjectReport(company1).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
+        new ProjectReport(company1).printReport(LocalDate.of(2015,1,1), LocalDate.now());
 
-        new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
+        new TaskReport("Aktualizacja danych", company1).printReport();
 
 //        new EmployeeReport(company1.getEmployees()).printReport();
 
