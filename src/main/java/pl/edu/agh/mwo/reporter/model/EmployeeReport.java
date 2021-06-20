@@ -100,7 +100,10 @@ public class EmployeeReport implements IReport{
            
             sb.append("Total -> " + employeeHoursSum + "hrs\n");
         }
-        sb.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(oldestDate) + ", newest comes from " + SHORT_DATE_FORMATTER.format(newestDate) + "\n");
+
+        if (oldestDate != null && newestDate != null){
+            sb.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(oldestDate) + ", newest comes from " + SHORT_DATE_FORMATTER.format(newestDate) + "\n");
+        }
         sb.append("Employee report generated at: " + REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
         reportBody = sb.toString();
     }

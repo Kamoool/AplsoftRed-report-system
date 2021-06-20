@@ -78,9 +78,11 @@ public class TaskReport implements IReport{
         }
 
         sbRow1.append("| Total hours |");
-        sbRow2.append(String.format("| %-11s |", totalHours)).append("\n")
-                .append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getOldestDate()) + ", newest comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getNewestDate()) + "\n")
-                .append("Task report generated at: ").append(REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
+        sbRow2.append(String.format("| %-11s |", totalHours)).append("\n");
+        if (taskReportRecord.getOldestDate() != null && taskReportRecord.getNewestDate() != null){
+            sbRow2.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getOldestDate()) + ", newest comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getNewestDate()) + "\n");
+        }
+        sbRow2.append("Task report generated at: ").append(REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
 
 
         reportBody = sbRow0.toString() + "\n" +
