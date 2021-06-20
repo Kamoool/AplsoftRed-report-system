@@ -16,7 +16,7 @@ import pl.edu.agh.mwo.workbook.WorkbookLoader;
 import pl.edu.agh.mwo.workbook.WorkbookReader;
 
 public class Main {
-    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
@@ -24,6 +24,21 @@ public class Main {
         Object[] parsedArguments = parseArguments(args);
 
         //TODO - SEND DATA TO FUNCTIONS
+
+        //TODO - SEND DATA TO FOLDER PARSER - DONE
+        FileBrowser fileBrowser = new FileBrowser("xls");
+        List<String> filePaths = fileBrowser.browse((String) parsedArguments[0]); // C://Users/cos/workbooks    lub C://Users/cos/workbooks/Kowalski_jan.xls
+        filePaths.forEach(f -> System.out.println(f));
+
+        //TODO - SEND DATA TO WORKBOOK LOADER
+        WorkbookReader wr = new WorkbookReader();
+
+        //TODO WE GET COMPANY
+        Company company = new Company();
+
+        //TODO - CHOOSE CORRECT REPORT TYPE
+        String s = handleReportType((int) parsedArguments[1], company);
+
 
         // mockData
         Task task1 = new Task("Aktualizacja danych", LocalDate.of(2020, 1, 8), 7);
@@ -47,26 +62,43 @@ public class Main {
         Employee empl2 = new Employee("Tyrion", "Lannister", Arrays.asList(project3, project4));
 
         Company company1 = new Company(Arrays.asList(empl1, empl2));
-      
-        WorkbookReader wr = new WorkbookReader();
+
+
         Company company11 = wr.getCompany();
-        
+
         Employee empl11 = wr.getEmployees().get(0);
 
 
-        new ProjectReport(empl1.getProjects()).printReport();
+        new ProjectReport(empl11.getProjects()).printReport();
 
         new ProjectReport(empl2.getProjects()).printReport();
-        new ProjectReport(empl1.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015,1,1));
-        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015,1,1), LocalDate.now());
+        new ProjectReport(empl11.getProjects()).printReport(LocalDate.now(), LocalDate.of(2015, 1, 1));
+        new ProjectReport(empl2.getProjects()).printReport(LocalDate.of(2015, 1, 1), LocalDate.now());
 
         new TaskReport("Aktualizacja danych", empl2.getProjects()).printReport();
 
 
         new EmployeeReport(company1.getEmployees()).printReport();
-      FileBrowser fileBrowser = new FileBrowser("xls");
-        List<String> filePaths = fileBrowser.browse("src/main/resources/");
-        filePaths.forEach(f -> System.out.println(f));
+
+    }
+
+    private static String handleReportType(int reportType, Company company) {
+
+        switch (reportType) {
+            case 1:
+                //TODO - REPORT 1 RUN
+
+            case 2:
+                //TODO - REPORT 2 RUN
+
+            case 3:
+                //TODO - REPORT 3 RUN
+
+            case 4:
+                //TODO - REPORT 4 RUN
+
+        }
+        return "Tutaj dodac cos fajnego";
     }
 
 
@@ -87,10 +119,11 @@ public class Main {
         //parsing options definition
         options.addOption("destination", true, "path of data files");
         options.addOption("reportType", true, "(1 - 4), type of report to be generated");
-        options.addOption("dateFilter", true, "filter with date <yyyy/mmm/dd-yyyy/mm/dd>");
+        options.addOption("dateFilter", true, "filter with date <dd/MM/yyyy-dd/MM/yyyy>");
         options.addOption("employeeFilter", true, "name of employee to be filtered");
         options.addOption("keyWordSearch", true, "keyword filter");
-        options.addOption("export", true, "path to generated .xls report file");
+        options.addOption("export", true, "path to generated .xlsx report file");
+
 
         try {
             CommandLine cmd = parser.parse(options, args);
@@ -98,7 +131,7 @@ public class Main {
             if (!cmd.hasOption("destination")) {
                 throw new MissingArgumentException("DESTINATION MUST BE DEFINED!");
             } else {
-                output[0] = cmd.getOptionValue("destination");
+                output[0] = (String) cmd.getOptionValue("destination");
             }
             if (!cmd.hasOption("reportType")) {
                 throw new MissingArgumentException("REPORT TYPE MUST BE DEFINED!");
@@ -107,7 +140,7 @@ public class Main {
             }
 
             if (cmd.hasOption("dateFilter")) {
-                boolean filterFromDate = cmd.getOptionValue("dateFilter").indexOf("-") == cmd.getOptionValue("dateFilter").length()-1;
+                boolean filterFromDate = cmd.getOptionValue("dateFilter").indexOf("-") == cmd.getOptionValue("dateFilter").length() - 1;
                 boolean filterToDate = cmd.getOptionValue("dateFilter").indexOf("-") == 0;
                 String[] dates = cmd.getOptionValue("dateFilter").split("-");
                 if (!filterToDate && !filterFromDate) {
