@@ -32,7 +32,7 @@ public class FileBrowser {
         File startFile = new File(dirPath);
 
         File[] listOfFiles = startFile.listFiles();
-        startPath += File.separator + startFile.getName();
+        startPath += File.separator;
 
         for (File file : listOfFiles) {
             if (!file.isDirectory()) {
