@@ -33,6 +33,12 @@ public class Main {
         //TODO - CHOOSE CORRECT REPORT TYPE -DONE
         IReport report = handleReportType((int) parsedArguments[1], company);
         report.printReport();
+        
+        //TODO - CREATE ERRORLOG FOR READING OF EXCEL FILE - DONE
+        List <String> errorLog = wr.getErrorLog();
+        for (String error : errorLog) {
+            System.err.println(error);
+        }
 
     }
 

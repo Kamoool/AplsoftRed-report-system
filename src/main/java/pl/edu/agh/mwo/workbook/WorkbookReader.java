@@ -3,6 +3,7 @@ package pl.edu.agh.mwo.workbook;
 import java.io.File;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellType;
@@ -18,9 +19,13 @@ import pl.edu.agh.mwo.reporter.model.Task;
 
 public class WorkbookReader {
 
-    List<Employee> employees = new ArrayList<>();
+    private List<Employee> employees = new ArrayList<>();
 
-    List<File> files = new ArrayList();
+    private List<File> files = new ArrayList();
+    
+    private List<String> errorLog = new ArrayList();
+    
+    
 
     public WorkbookReader(List<String> filePaths) {
         for (String filePath : filePaths) {
@@ -29,8 +34,11 @@ public class WorkbookReader {
     }
 
     public Company getCompany() {
-//        return new Company(this.getEmployees());
         return new Company(this.readEmployees(files));
+    }
+
+    public List<String> getErrorLog() {
+        return errorLog;
     }
 
     public List<Employee> readEmployees(List<File> files) {
@@ -72,18 +80,43 @@ public class WorkbookReader {
 
     private List<Task> getTasks(Sheet sheet) {
         List<Task> tasks = new ArrayList();
-        for (Row row : sheet) {
+        String error;
+        String name;
+        Date date;
+        double hours;
+        int cellCount = 0;
+        
+        for (int rowCount = 1; rowCount <= sheet.getLastRowNum(); rowCount++) {
             try {
-//                row.getCell(1).setCellType(CellType.STRING);
-                tasks.add(new Task(row.getCell(1).getStringCellValue(), row.getCell(0).getDateCellValue(), row.getCell(2).getNumericCellValue()));
+                cellCount=1;
+                date = sheet.getRow(rowCount).getCell(0).getDateCellValue();
+                cellCount=2;
+                name = sheet.getRow(rowCount).getCell(1).getStringCellValue();
+                cellCount=3;
+                hours = sheet.getRow(rowCount).getCell(2).getNumericCellValue();
+                
+                tasks.add(new Task( name , date, hours));
             } catch (DateTimeParseException e) {
-                System.err.println("Niepoprawna data");
+                rowCount++;
+                error = "Niepoprawna data w wierszu " + rowCount + " w komórce " + cellCount;
+                errorLog.add(error);
+                rowCount--;
             } catch (NumberFormatException e2) {
-                System.err.println("niepoprawny numer");
+                rowCount++;
+                error = "Niepoprawny numer w wierszu " + rowCount + " w komórce " + cellCount;
+                errorLog.add(error);
+                rowCount--;
             } catch (IllegalStateException e3) {
-                System.err.println("Niepoprawny format danych: " + e3.getMessage() + row.getCell(0).getStringCellValue() + row.getCell(1).getStringCellValue() + row.getCell(2).getStringCellValue());
+                rowCount++;
+                error = "Niepoprawny format danych w wierszu " + rowCount + " w komórce "+ cellCount + " : " + e3.getMessage();
+                errorLog.add(error);
+                rowCount--;
+            } catch (NullPointerException e4) {
+                rowCount++;
+                error = "Komórka " + cellCount + " w wierszu " + rowCount + " jest pusta";
+                errorLog.add(error);
+                rowCount--;
             }
-
         }
         return tasks;
     }
