@@ -1,14 +1,9 @@
 package pl.edu.agh.mwo.reporter.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +32,6 @@ public class ProjectReport implements IReport{
         }
         this.from = LocalDate.of(1900,1,1);
         this.to = LocalDate.now();
-        updateReport();
     }
 
     public void setFrom(LocalDate from) {
@@ -76,6 +70,7 @@ public class ProjectReport implements IReport{
 
         StringBuilder sb = new StringBuilder();
         sb.append(head);
+
         if (from.isAfter(to)){
             sb.append("ERROR: 'FROM' DATE CANNOT BE BEFORE 'TO' DATE.\n");
             reportBody = sb.toString();
@@ -92,18 +87,23 @@ public class ProjectReport implements IReport{
 
 
             double projectHoursSum = filteredList.stream()
-                    .map(x -> x.getHours())
+                    .map(Task::getHours)
                     .reduce(0.0, Double::sum);
 
-            LocalDate projectNewestDate = filteredList.stream()
-                    .map(x -> x.getDate())
+            LocalDate projectNewestDate = null;
+            LocalDate projectOldestDate = null;
+
+            if (filteredList.size() != 0){
+            projectNewestDate = filteredList.stream()
+                    .map(Task::getDate)
                     .max(LocalDate::compareTo)
                     .get();
 
-            LocalDate projectOldestDate = filteredList.stream()
-                    .map(x -> x.getDate())
+            projectOldestDate = filteredList.stream()
+                    .map(Task::getDate)
                     .min(LocalDate::compareTo)
                     .get();
+            }
 
             if (newestDate != null){
                 newestDate = projectNewestDate.isAfter(newestDate)? projectNewestDate : newestDate;
@@ -144,17 +144,15 @@ public class ProjectReport implements IReport{
         printReport();
     }
 
-
     @Override
-    public void saveReportToFile(){
-        //TODO ustalic gdzie przechowujemy reporty, czy w jednym miejscu czy np. podajemy path na wejscie
-        String reportFilePath = new File("ProjRep_" + FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
-        try {
-            Files.write(Paths.get(reportFilePath), Arrays.asList(reportBody.split("\n")));
-        } catch (IOException e) {
-            System.out.println("Error: unalbe to create file " + reportFilePath);
-            e.printStackTrace();
+    public void handleFilters(Object[] filters) {
+        if (filters[2] != null){
+            from = (LocalDate) filters[2];
         }
-        System.out.println("File " + reportFilePath + " created succesfully");        
+
+        if (filters[3] != null){
+            to = (LocalDate) filters[3];
+        }
+
     }
 }

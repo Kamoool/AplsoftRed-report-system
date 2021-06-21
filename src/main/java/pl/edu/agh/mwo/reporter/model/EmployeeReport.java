@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class EmployeeReport implements IReport{
 
@@ -23,18 +24,43 @@ public class EmployeeReport implements IReport{
 
     private String head;
     private String legend;
+    private Company company;
     private List<Employee> employees;
     private String reportBody;
+    private String employeeNameFilter = "";
 
     public EmployeeReport(Company company) {
         this.head = "Report #" + this.hashCode();
         this.legend = String.format("Pracownik | ");
+        this.company = company;
         this.employees = company.getEmployees();
-        updateReport();
-    }   
-        
+    }
+
+    public String getEmployeeNameFilter() {
+        return employeeNameFilter;
+    }
+
+    public void setEmployeeNameFilter(String employeeNameFilter) {
+        this.employeeNameFilter = employeeNameFilter;
+    }
+
+    public void resetEmployeeNameFilter(String employeeNameFilter) {
+        this.employeeNameFilter = "";
+    }
+
+
+
     @Override
     public void updateReport() {
+        if (employeeNameFilter.equals("")){
+            this.employees = company.getEmployees();
+        } else {
+            this.employees = company.getEmployees().stream()
+                    .filter(employee -> employee.getLastName().equals(employeeNameFilter.split("_")[0]) && employee.getFirstName().equals(employeeNameFilter.split("_")[1]))
+                    .collect(Collectors.toList());
+        }
+
+
         LocalDate newestDate = null;
         LocalDate oldestDate = null;
 
@@ -110,19 +136,15 @@ public class EmployeeReport implements IReport{
 
     @Override
     public void printReport() {
+        updateReport();
         System.out.println(reportBody);
     }
 
     @Override
-    public void saveReportToFile() {
-        //TODO ustalic gdzie przechowujemy reporty, czy w jednym miejscu czy np. podajemy path na wejscie
-        String reportFilePath = new File("EmplRep_" + FILE_DATE_FORMATTER.format(new Date(System.currentTimeMillis())) + ".txt").getAbsolutePath();
-        try {
-            Files.write(Paths.get(reportFilePath), Arrays.asList(reportBody.split("\n")));
-        } catch (IOException e) {
-            System.out.println("Error: unable to create file " + reportFilePath);
-            e.printStackTrace();
+    public void handleFilters(Object[] filters) {
+        if (filters[4] != null){
+            employeeNameFilter = (String) filters[4];
+            System.out.println((String) filters[4]);
         }
-        System.out.println("File " + reportFilePath + " created succesfully");
     }
 }

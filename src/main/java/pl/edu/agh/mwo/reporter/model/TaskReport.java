@@ -15,7 +15,6 @@ public class TaskReport implements IReport{
 
     private String head;
     private String legend;
-    private Company company;
     private List<Project> projects;
     private String reportBody;
     private TaskReportRecord taskReportRecord;
@@ -30,7 +29,6 @@ public class TaskReport implements IReport{
         for (Employee employee : company.getEmployees()) {
             this.projects.addAll(employee.getProjects());
         }
-        updateReport(taskName);
     }
 
     public TaskReport(Company company) {
@@ -102,7 +100,10 @@ public class TaskReport implements IReport{
     }
 
     @Override
-    public void saveReportToFile() {
-
+    public void handleFilters(Object[] filters) {
+        if (filters[5] != null){
+            taskName = (String) filters[5];
+        }
     }
+
 }
