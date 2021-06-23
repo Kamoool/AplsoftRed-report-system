@@ -2,10 +2,8 @@ package pl.edu.agh.mwo.reporter.model;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TaskReport implements IReport{
 
@@ -19,10 +17,10 @@ public class TaskReport implements IReport{
     private String reportBody;
     private TaskReportRecord taskReportRecord;
 
-    private String taskName;
+    private String taskNameFilter;
 
-    public TaskReport(String taskName, Company company) {
-        this.taskName = taskName;
+    public TaskReport(String taskNameFilter, Company company) {
+        this.taskNameFilter = taskNameFilter;
         this.head = "Report #" + this.hashCode();
         this.legend = String.format("| Task | Projekt 1| Projekt 2 | Projekt 3 | Suma |");
         this.projects = new ArrayList<>();
@@ -32,15 +30,15 @@ public class TaskReport implements IReport{
     }
 
     public TaskReport(Company company) {
-        this(null, company);
+        this("", company);
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getTaskNameFilter() {
+        return taskNameFilter;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setTaskNameFilter(String taskNameFilter) {
+        this.taskNameFilter = taskNameFilter;
     }
 
     public String getReportBody() {
@@ -49,47 +47,77 @@ public class TaskReport implements IReport{
 
     @Override
     public void updateReport() {
-        if (taskName == null){
-            reportBody = "Set Task name first!";
-            return;
-        }
 
-        taskReportRecord = new TaskReportRecord(taskName, projects);
+        taskReportRecord = new TaskReportRecord(taskNameFilter, projects);
 
-        String firstEntryFormat = "| %-" + Math.max(taskName.length(), 10) + "s ";
-
-        double totalHours = 0.0;
+        String firstEntryFormat = "| %-" + Math.max(taskReportRecord.getLongestTaskName(), 10) + "s |";
+        String lastEntryFormat = "| %" + Math.max(taskReportRecord.getLongestTaskName(), 10) + "s |";
 
         StringBuilder sbRow0 = new StringBuilder();
         StringBuilder sbRow1 = new StringBuilder();
-        StringBuilder sbRow2 = new StringBuilder();
+        StringBuilder sbBottomRows = new StringBuilder();
 
         sbRow0.append(head);
-        sbRow1.append(String.format(firstEntryFormat, "Task name"));
-        sbRow2.append(String.format(firstEntryFormat, taskName));
+        sbRow1.append(String.format(firstEntryFormat, "Task name "));
+        sbBottomRows.append(String.format(lastEntryFormat, "Total:"));
 
-        for (Map.Entry<Project, Double> entry : taskReportRecord.getTaskProjectMap().entrySet()){
-            String entryFormat = "| %-" + entry.getKey().getName().length() + "s ";
-            sbRow1.append(String.format(entryFormat, entry.getKey().getName()));
-            sbRow2.append(String.format(entryFormat, entry.getValue()));
-            totalHours = totalHours + entry.getValue();
+        List<Project> projects = new ArrayList<>();
+        Set<Task> tasks = new HashSet<>();
+
+        for (Map.Entry<Project, List<Task>> entry : taskReportRecord.getTaskProjectMap().entrySet()){
+            projects.add(entry.getKey());
+            tasks.addAll(entry.getValue());
         }
 
-        sbRow1.append("| Total hours |");
-        sbRow2.append(String.format("| %-11s |", totalHours)).append("\n");
+
+        for (Project project : projects){
+            sbRow1.append(String.format(" %" + project.getName().length() + "s |", project.getName()));
+        }
+
+        StringBuilder sbMiddleRows = new StringBuilder();
+        Map<Project, Double> totalProjectHours = new HashMap<>();
+        for (Task task : tasks){
+            sbMiddleRows.append(String.format(firstEntryFormat, task.getName()));
+            for (Project project : projects){
+
+                double taskHours = 0.0;
+                for (Task t1 : project.getTasks()){
+                    if (t1.getName().contains(task.getName())){
+                        taskHours = t1.getHours();
+                        if (totalProjectHours.containsKey(project)){
+                            totalProjectHours.put(project, totalProjectHours.get(project) + taskHours);
+                        } else {
+                            totalProjectHours.put(project, taskHours);
+                        }
+                        break;
+                    }
+                }
+
+
+                sbMiddleRows.append(String.format(" %" + project.getName().length()  + "s |", taskHours));
+            }
+            sbMiddleRows.append("\n");
+        }
+
+        for (Map.Entry<Project, Double> entry: totalProjectHours.entrySet()){
+            sbBottomRows.append(String.format(" %" + entry.getKey().getName().length()  + "s |", entry.getValue()));
+        }
+        sbBottomRows.append("\n");
+
+
+
+
+
         if (taskReportRecord.getOldestDate() != null && taskReportRecord.getNewestDate() != null){
-            sbRow2.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getOldestDate()) + ", newest comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getNewestDate()) + "\n");
+            sbBottomRows.append("Oldest entry comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getOldestDate()) + ", newest comes from " + SHORT_DATE_FORMATTER.format(taskReportRecord.getNewestDate()) + "\n");
         }
-        sbRow2.append("Task report generated at: ").append(REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
+        sbBottomRows.append("Task report generated at: ").append(REPORT_DATE_FORMATTER.format(new Date(System.currentTimeMillis())));
 
-
-        reportBody = sbRow0.toString() + "\n" +
-                        sbRow1.toString() + "\n" +
-                                sbRow2.toString();
+        reportBody = sbRow0.toString() + "\n" + sbRow1.toString() + "\n" + sbMiddleRows.toString() + sbBottomRows.toString();
     }
 
     public void updateReport(String name) {
-        taskName = name;
+        taskNameFilter = name;
         printReport();
     }
 
@@ -102,7 +130,7 @@ public class TaskReport implements IReport{
     @Override
     public void handleFilters(Object[] filters) {
         if (filters[5] != null){
-            taskName = (String) filters[5];
+            taskNameFilter = (String) filters[5];
         }
     }
 
