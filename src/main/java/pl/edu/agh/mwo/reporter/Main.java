@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -37,17 +35,17 @@ public class Main {
         //TODO - CHOOSE CORRECT REPORT TYPE -DONE
         IReport report = handleReportType((int) parsedArguments[1], company, parsedArguments);
         report.printReport();
-        
+
         //TODO - CREATE ERRORLOG FOR READING OF EXCEL FILE - DONE
-        List <String> errorLog = wr.getErrorLog();
+        List<String> errorLog = wr.getErrorLog();
         for (String error : errorLog) {
             System.err.println(error);
         }
 
         //TODO - EXPORT REPORT TO XLS
         XlsExporter xlsExporter = new XlsExporter();
-        String outputPath = "EmplRep_" + new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Date(System.currentTimeMillis())) + ".xls";
-        xlsExporter.export(outputPath,report);
+        String outputPath = parsedArguments[6] + "/EmplRep_" + new SimpleDateFormat("dd-MM-yyyy").format(new Date(System.currentTimeMillis())) + ".xls";
+        xlsExporter.export(outputPath, report);
     }
 
     private static IReport handleReportType(int reportType, Company company, Object[] filters) {

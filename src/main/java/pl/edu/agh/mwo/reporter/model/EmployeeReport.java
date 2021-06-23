@@ -120,11 +120,13 @@ public class EmployeeReport implements IReport{
             }
             
             for(double hoursSum : projectsHoursSum) {
-            	 sb.append(hoursSum + "hrs | ");
+//            	 sb.append(hoursSum + "hrs | ");
+            	 sb.append(hoursSum + " | ");
                  employeeHoursSum = employeeHoursSum + hoursSum;
             }
            
-            sb.append("Total -> " + employeeHoursSum + "hrs\n");
+//            sb.append("Total -> " + employeeHoursSum + "hrs\n");
+            sb.append(employeeHoursSum + "\n");
         }
 
         if (oldestDate != null && newestDate != null){

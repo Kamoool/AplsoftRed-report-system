@@ -6,7 +6,7 @@ public interface IReport {
 
     void updateReport();
     void printReport();
-    void saveReportToFile();
+//    void saveReportToFile();
     String getReportBody();
     void handleFilters(Object[] filters);
 
