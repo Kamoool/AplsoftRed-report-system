@@ -35,8 +35,14 @@ public class Main {
         System.out.println(company.getEmployees().size());
 
         //TODO - CHOOSE CORRECT REPORT TYPE -DONE
-        IReport report = handleReportType((int) parsedArguments[1], company);
+        IReport report = handleReportType((int) parsedArguments[1], company, parsedArguments);
         report.printReport();
+        
+        //TODO - CREATE ERRORLOG FOR READING OF EXCEL FILE - DONE
+        List <String> errorLog = wr.getErrorLog();
+        for (String error : errorLog) {
+            System.err.println(error);
+        }
 
         //TODO - EXPORT REPORT TO XLS
         XlsExporter xlsExporter = new XlsExporter();
@@ -44,19 +50,22 @@ public class Main {
         xlsExporter.export(outputPath,report);
     }
 
-    private static IReport handleReportType(int reportType, Company company) {
+    private static IReport handleReportType(int reportType, Company company, Object[] filters) {
 
         IReport report = null;
 
         switch (reportType) {
             case 1:
                 report = new ProjectReport(company);
+                report.handleFilters(filters);
                 break;
             case 2:
                 report = new EmployeeReport(company);
+                report.handleFilters(filters);
                 break;
             case 3:
                 report = new TaskReport(company);
+                report.handleFilters(filters);
                 break;
             case 4:
                 //TODO - REPORT 4 RUN
