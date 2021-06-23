@@ -1,14 +1,9 @@
 package pl.edu.agh.mwo.reporter.model;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +23,14 @@ public class EmployeeReport implements IReport{
     private List<Employee> employees;
     private String reportBody;
     private String employeeNameFilter = "";
+    private String projectNameFilter = "";
 
     public EmployeeReport(Company company) {
         this.head = "Report #" + this.hashCode();
         this.legend = String.format("Pracownik | ");
         this.company = company;
         this.employees = company.getEmployees();
+        this.projectNameFilter = "";
     }
 
     public String getEmployeeNameFilter() {
@@ -72,7 +69,8 @@ public class EmployeeReport implements IReport{
                 
         for (Employee employee : employees) {
         	for (Project project : employee.getProjects()){
-        		if(!projectsMapping.containsKey(project.getName())) {
+        		if(!projectsMapping.containsKey(project.getName()) && project.getName().contains(projectNameFilter)) {
+
         			projectsMapping.put(project.getName(), projectIndex); 
             		projectIndex ++;
             		sb.append(project.getName() + " | ");
@@ -112,11 +110,12 @@ public class EmployeeReport implements IReport{
             double projectsHoursSum[] = new double[projectsMapping.size()];
             
             for (Project project : employee.getProjects()){
-                double projectHoursSum = project.getTasks().stream()
-                        .map(x -> x.getHours())
-                        .reduce(0.0, Double::sum);
-                
-                projectsHoursSum[projectsMapping.get(project.getName())-1] = projectHoursSum;   
+                if (project.getName().contains(projectNameFilter)){
+                    double projectHoursSum = project.getTasks().stream()
+                            .map(x -> x.getHours())
+                            .reduce(0.0, Double::sum);
+                    projectsHoursSum[projectsMapping.get(project.getName())-1] = projectHoursSum;
+                }
             }
             
             for(double hoursSum : projectsHoursSum) {
@@ -148,6 +147,11 @@ public class EmployeeReport implements IReport{
             employeeNameFilter = (String) filters[4];
             System.out.println((String) filters[4]);
         }
+
+        if (filters[5] != null){
+            projectNameFilter = (String) filters[5];
+        }
+
     }
 
     @Override

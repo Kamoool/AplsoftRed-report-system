@@ -22,6 +22,7 @@ public class ProjectReport implements IReport{
     private String reportBody;
     private LocalDate from;
     private LocalDate to;
+    private String projectName;
 
     public ProjectReport(Company company) {
         this.head = "Report #" + this.hashCode() + "\n";
@@ -32,6 +33,7 @@ public class ProjectReport implements IReport{
         }
         this.from = LocalDate.of(1900,1,1);
         this.to = LocalDate.now();
+        this.projectName = "";
     }
 
     public void setFrom(LocalDate from) {
@@ -80,49 +82,51 @@ public class ProjectReport implements IReport{
 
         for (Project project : projects) {
 
-            List<Task> filteredList = project.getTasks().stream()
-                    .filter(x -> x.getDate().isBefore(to))
-                    .filter(x -> x.getDate().isAfter(from))
-                    .collect(Collectors.toList());
+            if (project.getName().contains(projectName)){
+                List<Task> filteredList = project.getTasks().stream()
+                        .filter(x -> x.getDate().isBefore(to))
+                        .filter(x -> x.getDate().isAfter(from))
+                        .collect(Collectors.toList());
 
 
-            double projectHoursSum = filteredList.stream()
-                    .map(Task::getHours)
-                    .reduce(0.0, Double::sum);
+                double projectHoursSum = filteredList.stream()
+                        .map(Task::getHours)
+                        .reduce(0.0, Double::sum);
 
-            LocalDate projectNewestDate = null;
-            LocalDate projectOldestDate = null;
+                LocalDate projectNewestDate = null;
+                LocalDate projectOldestDate = null;
 
-            if (filteredList.size() != 0){
-            projectNewestDate = filteredList.stream()
-                    .map(Task::getDate)
-                    .max(LocalDate::compareTo)
-                    .get();
+                if (filteredList.size() != 0) {
+                    projectNewestDate = filteredList.stream()
+                            .map(Task::getDate)
+                            .max(LocalDate::compareTo)
+                            .get();
 
-            projectOldestDate = filteredList.stream()
-                    .map(Task::getDate)
-                    .min(LocalDate::compareTo)
-                    .get();
+                    projectOldestDate = filteredList.stream()
+                            .map(Task::getDate)
+                            .min(LocalDate::compareTo)
+                            .get();
+                }
+
+                if (newestDate != null) {
+                    newestDate = projectNewestDate.isAfter(newestDate) ? projectNewestDate : newestDate;
+                } else {
+                    newestDate = projectNewestDate;
+                }
+
+                if (oldestDate != null) {
+                    oldestDate = projectOldestDate.isBefore(oldestDate) ? projectOldestDate : oldestDate;
+                } else {
+                    oldestDate = projectOldestDate;
+                }
+
+
+                String projectName = project.getName();
+                if (projectName.length() > 30) {
+                    projectName = projectName.substring(0, 30 - 2) + "..";
+                }
+                sb.append(String.format(LINE_FORMAT, projectName, projectHoursSum));
             }
-
-            if (newestDate != null){
-                newestDate = projectNewestDate.isAfter(newestDate)? projectNewestDate : newestDate;
-            } else {
-                newestDate = projectNewestDate;
-            }
-
-            if (oldestDate != null){
-                oldestDate = projectOldestDate.isBefore(oldestDate)? projectOldestDate : oldestDate;
-            } else {
-                oldestDate = projectOldestDate;
-            }
-
-
-            String projectName = project.getName();
-            if (projectName.length() > 30){
-                projectName = projectName.substring(0, 30 - 2) + "..";
-            }
-            sb.append(String.format(LINE_FORMAT, projectName, projectHoursSum));
         }
 
         sb.append("Report generated for period from " + SHORT_DATE_FORMATTER.format(from) + " to " + SHORT_DATE_FORMATTER.format(to) + "\n");
@@ -152,6 +156,10 @@ public class ProjectReport implements IReport{
 
         if (filters[3] != null){
             to = (LocalDate) filters[3];
+        }
+
+        if (filters[5] != null){
+            projectName = (String) filters[5];
         }
 
     }
