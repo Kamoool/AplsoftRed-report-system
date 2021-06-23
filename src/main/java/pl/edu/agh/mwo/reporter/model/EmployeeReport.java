@@ -147,4 +147,9 @@ public class EmployeeReport implements IReport{
             System.out.println((String) filters[4]);
         }
     }
+
+    @Override
+    public String getReportBody(){
+        return reportBody;
+    }
 }

@@ -1,12 +1,16 @@
 package pl.edu.agh.mwo.reporter;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.cli.*;
+import pl.edu.agh.mwo.export.XlsExporter;
 import pl.edu.agh.mwo.fileBrowser.FileBrowser;
 import pl.edu.agh.mwo.reporter.model.*;
 import pl.edu.agh.mwo.workbook.WorkbookReader;
@@ -14,7 +18,7 @@ import pl.edu.agh.mwo.workbook.WorkbookReader;
 public class Main {
     public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Object[] parsedArguments = parseArguments(args);
 
@@ -40,6 +44,10 @@ public class Main {
             System.err.println(error);
         }
 
+        //TODO - EXPORT REPORT TO XLS
+        XlsExporter xlsExporter = new XlsExporter();
+        String outputPath = "EmplRep_" + new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss").format(new Date(System.currentTimeMillis())) + ".xls";
+        xlsExporter.export(outputPath,report);
     }
 
     private static IReport handleReportType(int reportType, Company company, Object[] filters) {
