@@ -1,19 +1,13 @@
 # AplsoftRed-report-system
 
-$$$$$  $$$$$  $      $$$$$   $$$$$   $$$$$   $$$$$   $$$$$   $$$$$   $$$$
-$   $  $   $  $      $       $   $   $         $     $   $   $       $   $
-$   $  $   $  $      $       $   $   $         $     $   $   $       $   $
-$   $  $$$$$  $      $$$$$   $   $   $$$$$     $     $$$$$   $$$$$   $   $
-$$$$$  $      $          $   $   $   $         $     $ $     $       $   $
-$   $  $      $          $   $   $   $         $     $  $    $       $   $
-$   $  $      $$$$$  $$$$$   $$$$$   $         $     $   $   $$$$$   $$$$
+
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
 This program may be used to generate reports.
 Input files must be done using certain template. 
-User can choose between 4 types of reports.
+User can choose between 3 types of reports.
 
 -----------------------------------------------------------------------------
 
@@ -33,7 +27,6 @@ before following commands
 **-destination** <input the source files path>
 
 
-
 It may be catalog with several files or with single one.
 
 e.g.
@@ -46,7 +39,7 @@ e.g.
 
 **-reportType** <choose between 1 and 3>
 
-1: Displays all projects with hours summary 
+1: Displays all projects with their hours summary 
 
 2: Displays all employees with their hours spent on each project
 
@@ -72,7 +65,6 @@ This filter shows data from provided date till now.
 This filter shows data from beginning till provided date.
 
 
-
 e.g.
 
 -dateFilter 01/01/2012-05/01/2012
@@ -85,6 +77,8 @@ e.g.
 
 **-employeeFilter** <surname_name>
 
+This filter works only with the 2nd type report
+
 e.g.
 
 -employeeFilter kowalski_jan
@@ -93,7 +87,7 @@ e.g.
 
 **-keyWordSearch** <word>
 
-This filter works only with report of 3rd type
+This filter works only with the 3rd type report
 
 e.g.
 
@@ -111,14 +105,14 @@ e.g.
 -----------------------------------------------------------------------------
 **-h**
 
-Displays help
+Displays help.
 
 e.g.
 
 -h
 
 -----------------------------------------------------------------------------
-**proper examples to run program**
+**proper examples to run the program**
 
 java -jar reporter.jar -destination C:/Users/Desktop/Resources -reportType 1 -dateFilter -10/08/2020 -export C:/Users/Desktop/OutputReport.xls
 
@@ -128,9 +122,9 @@ java -jar reporter.jar -destination C:/Users/Desktop/Resources/ -reportType 2 -e
 
 **This command reads** the directory tree and base on this it **creates** 2nd type report which **displays** hours summary spent on each project by Jan Kowalski
 
-java -jar reporter.jar -destination C:/Users/Desktop/Resources -reportType 3 -dateFilter 5/02/2016-10/08/2020 -employeeFilter Kowalski_Jan -keyWordSearch analiza -export C:/Users/Desktop/OutputReport.xls
+java -jar reporter.jar -destination C:/Users/Desktop/Resources -reportType 3 -dateFilter 5/02/2016-10/08/2020 -keyWordSearch analiza -export C:/Users/Desktop/OutputReport.xls
 
-**This command reads** the directory tree and base on this it **creates** report of the 3rd type, **displays** data for provided date range (5/02/2016 - 10/08/2020) for employee Jan Kowalski and his hours summary for "analiza" task completed in each project and **exports** the report to the .xls file with name "OutputReport" to C:/Users/Desktop
+**This command reads** the directory tree and base on this it **creates** report of the 3rd type, **displays** data for provided date range (5/02/2016 - 10/08/2020) and summary for "analiza" task completed in each project and **exports** the report to the .xls file with name "OutputReport" to C:/Users/Desktop
 
 java -jar reporter.jar -destination C:/Users/Desktop/Resources/Nowak_Piotr -reportType 3 -dateFilter 5/02/2016-10/08/2020 -keyWordSearch programowanie -export C:/Users/Desktop/OutputReport.xls
 
