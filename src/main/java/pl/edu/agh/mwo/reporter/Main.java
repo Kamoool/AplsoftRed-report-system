@@ -43,9 +43,11 @@ public class Main {
         }
 
         //TODO - EXPORT REPORT TO XLS
-        XlsExporter xlsExporter = new XlsExporter();
-        String outputPath = parsedArguments[6] + "/EmplRep_" + new SimpleDateFormat("dd-MM-yyyy").format(new Date(System.currentTimeMillis())) + ".xls";
-        xlsExporter.export(outputPath, report);
+        if(parsedArguments[6]!=null) {
+            XlsExporter xlsExporter = new XlsExporter();
+            String outputPath = parsedArguments[6] + "/EmplRep_" + new SimpleDateFormat("dd-MM-yyyy").format(new Date(System.currentTimeMillis())) + ".xls";
+            xlsExporter.export(outputPath, report);
+        }
     }
 
     private static IReport handleReportType(int reportType, Company company, Object[] filters) {
