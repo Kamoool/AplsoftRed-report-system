@@ -1,8 +1,13 @@
 package pl.edu.agh.mwo.reporter.model;
+
+import java.util.Map;
+
 public interface IReport {
 
-    void generateReport();
+    void updateReport();
     void printReport();
-    void saveReportToFile();
+//    void saveReportToFile();
+    String getReportBody();
+    void handleFilters(Object[] filters);
 
 }

@@ -34,15 +34,30 @@ public class Project {
     public void addTask(Task task) {
         if (!this.tasks.contains(task))
             this.tasks.add(task);
+        else {
+            for (Task task1 : this.tasks) {
+                if (task1.equals(task))
+                    task1.setHours(task1.getHours() + task.getHours());
+            }
+        }
     }
 
     public void removeTask(Task task) {
-        if (this.tasks.contains(task))
-            this.tasks.remove(task);
+        this.tasks.remove(task);
     }
 
-    public Task findTaskByName(String taskName) {
-        Task testTask = new Task(taskName, LocalDate.now(), 0);
+    public List<Task> findTaskByName(String taskName) {
+        List<Task> foundTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getName().equals(taskName))
+                foundTasks.add(task);
+        }
+        return foundTasks;
+    }
+
+
+    public Task findTaskByNameAndDate(String taskName, LocalDate date) {
+        Task testTask = new Task(taskName, date, 0);
         for (Task task : tasks) {
             if (task.equals(testTask))
                 return task;
