@@ -3,3 +3,10 @@ install: true
 script:
   - mvn install
   - mvn package
+deploy:
+  provider: releases
+  api_key: "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"
+  file: "Reporter_repo-1.0-SNAPSHOT-shaded"
+  skip_cleanup: true
+  on:
+    tags: true
