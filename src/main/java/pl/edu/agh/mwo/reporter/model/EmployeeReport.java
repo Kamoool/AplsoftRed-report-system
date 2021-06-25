@@ -53,7 +53,7 @@ public class EmployeeReport implements IReport{
             this.employees = company.getEmployees();
         } else {
             this.employees = company.getEmployees().stream()
-                    .filter(employee -> employee.getLastName().equals(employeeNameFilter.split("_")[0]) && employee.getFirstName().equals(employeeNameFilter.split("_")[1]))
+                    .filter(employee -> employee.getLastName().toUpperCase().equals(employeeNameFilter.split("_")[0].toUpperCase()) && employee.getFirstName().toUpperCase().equals(employeeNameFilter.split("_")[1].toUpperCase()))
                     .collect(Collectors.toList());
         }
 

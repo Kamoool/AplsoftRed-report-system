@@ -24,7 +24,7 @@ public class TaskReportRecord {
             if (!taskProjectMap.containsKey(project)) {
                 taskProjectMap.put(project, new ArrayList<>());
                 for (Task task : project.getTasks()) {
-                    if (task.getName().contains(this.nameFilter)) {
+                    if (task.getName().toUpperCase().contains(this.nameFilter.toUpperCase())) {
                         taskProjectMap.get(project).add(task);
                         longestTaskName = Math.max(longestTaskName, task.getName().length());
                         updateDates(task);
@@ -33,7 +33,7 @@ public class TaskReportRecord {
             } else {
                 List<Task> tasksToBeAdded = new ArrayList<>();
                 for (Task task : project.getTasks()){
-                    if (task.getName().contains(this.nameFilter)) {
+                    if (task.getName().toUpperCase().contains(this.nameFilter.toUpperCase())) {
                         tasksToBeAdded.add(task);
                         taskProjectMap.get(project).add(task);
                         longestTaskName = Math.max(longestTaskName, task.getName().length());
